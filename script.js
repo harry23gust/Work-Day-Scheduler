@@ -1,6 +1,6 @@
 var workDayPlanner = [];
 
-//Loop and create array
+
 for (time = 9; time <= 17; time++) {
   var id = time - 9;
   var dataPlanner = "";
@@ -29,23 +29,23 @@ for (time = 9; time <= 17; time++) {
   workDayPlanner.push(dataPlanner);
 }
 
-//current Day Header
+
 function currentDate() {
     var cDate = moment().format("dddd, MMMM Do");
     $("#currentDay").text(cDate);
   }
-  //localStorage store data
+  
   function storePlannerData() {
     localStorage.setItem("dayPlanner", JSON.stringify(workDayPlanner));
   }
-  // localStorage Data display
+  
   function plannerDataDisplay() {
     workDayPlanner.forEach(function (hour) {
       $("#" + hour.id).val(hour.dataPlanner);
     });
   }
   
-  //Load Data
+  
   function dataLoader() {
     var dataLoad = JSON.parse(localStorage.getItem("dayPlanner"));
     if (dataLoad) {
@@ -70,7 +70,7 @@ function currentDate() {
     var hData = $("<textarea>");
     hData.attr("id", hour.id);
   
-    //compare times - color codes
+    
     if (hour.time == moment().format("HH")) {
       hData.addClass("present");
     } else if (hour.time < moment().format("HH")) {
@@ -79,3 +79,31 @@ function currentDate() {
       hData.addClass("future");
     }
     hInput.append(hData);
+
+    
+  var saveIcon = $("<i class='far fa-save fa-lg'></i>");
+  var saveEnd = $("<button>").addClass("col-md-1 saveBtn");
+
+  
+  saveEnd.append(saveIcon);
+  tRow.append(tField, hInput, saveEnd);
+});
+
+
+$(".saveBtn").on("click", function (event) {
+  event.preventDefault();
+  
+  var saveIndex = $(this).siblings(".description").children().attr("id");
+  workDayPlanner[saveIndex].dataPlanner = $(this)
+    .siblings(".description")
+    .children()
+    .val();
+
+  storePlannerData();
+  plannerDataDisplay();
+});
+
+
+currentDate();
+
+dataLoader();
